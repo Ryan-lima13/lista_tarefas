@@ -14,6 +14,7 @@ class _HomeState extends State<Home> {
    List<Lista> tarefas = [];
 
 
+
    final TextEditingController tarefaController = TextEditingController();
 
   @override
@@ -75,6 +76,8 @@ class _HomeState extends State<Home> {
                       for(Lista todo  in tarefas)
                         TarefasListItem(
                           todo: todo,
+                            onDelete: onDelete,
+
 
                         ),
 
@@ -107,5 +110,10 @@ class _HomeState extends State<Home> {
 
       ),
     );
+  }
+  void onDelete(Lista todo){
+    setState((){
+      tarefas.remove(todo);
+    });
   }
 }
