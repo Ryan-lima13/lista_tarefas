@@ -12,6 +12,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
    List<Lista> tarefas = [];
+   Lista? deletedLista;
+   int? deleteListaPos;
+
 
 
 
@@ -96,7 +99,7 @@ class _HomeState extends State<Home> {
                         primary: Color(0xff00d7f3),
                         padding: EdgeInsets.all(14)
                       ),
-                        onPressed: (){},
+                        onPressed: showDeleteListaConfirmacao,
                         child: Text('Limpar tudo')
                     )
                   ],
@@ -112,8 +115,69 @@ class _HomeState extends State<Home> {
     );
   }
   void onDelete(Lista todo){
+    deletedLista = todo;
+    deleteListaPos = tarefas.indexOf(todo);
     setState((){
       tarefas.remove(todo);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text('Tarefa ${todo.title} foi removida com sucesso!',
+            style: TextStyle(
+              color: Color(0xff060708)
+            ),
+          ),
+        backgroundColor: Colors.white,
+        action: SnackBarAction(
+          label: 'Desfazer',
+          textColor: const Color(0xff00d7f3),
+          onPressed: (){
+            setState((){
+              tarefas.insert(deleteListaPos!, deletedLista!);
+            });
+          },
+        ) ,
+        duration: const Duration(seconds: 5),
+
+      ),
+
+    );
+  }
+  void showDeleteListaConfirmacao(){
+    showDialog(context: context, builder: (context)=> AlertDialog(
+      title: Text('Limpar Tudo?'),
+      content:  Text('Você tem certeza que deseja apagar todas as tarefas?'),
+      actions: [
+        TextButton(
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancelar'),
+          style: TextButton.styleFrom(
+            primary: Color(0xff00d7f3),
+          ),
+        ),
+        TextButton(
+            onPressed: (){
+              Navigator.of(context).pop();
+              deleteAllTodos();
+
+            },
+            style: TextButton.styleFrom(
+              primary: Colors.red
+            ),
+            child: Text('Limpar tudo')
+        )
+      ],
+
+    ),
+    );
+
+  }
+  void deleteAllTodos(){
+    setState((){
+      tarefas.clear();
     });
   }
 }
