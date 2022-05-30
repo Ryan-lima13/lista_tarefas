@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas/models/lista.dart';
 
 import '../widgets/TarefasListItem.dart';
 
@@ -10,7 +11,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-   List<String> tarefas = [];
+   List<Lista> tarefas = [];
+
 
    final TextEditingController tarefaController = TextEditingController();
 
@@ -48,7 +50,11 @@ class _HomeState extends State<Home> {
                         onPressed: (){
                           String text =tarefaController.text;
                           setState((){
-                            tarefas.add(text);
+                            Lista novaLista = Lista(
+                              title: text,
+                              dateTime: DateTime.now()
+                            );
+                            tarefas.add(novaLista);
 
                           });
                           tarefaController.clear();
@@ -66,9 +72,10 @@ class _HomeState extends State<Home> {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      for(String tarefa in tarefas)
+                      for(Lista todo  in tarefas)
                         TarefasListItem(
-                          title: tarefa,
+                          todo: todo,
+
                         ),
 
 
