@@ -15,12 +15,24 @@ class _HomeState extends State<Home> {
    List<Lista> tarefas = [];
    Lista? deletedLista;
    int? deleteListaPos;
+   String? erroText;
 
 
 
 
    final TextEditingController tarefaController = TextEditingController();
    final TodoRepositories todoRepositories = TodoRepositories();
+   @override
+   void initState(){
+     super.initState();
+     todoRepositories.getTodoList().then((value) {
+       setState((){
+         tarefas = value;
+       });
+     });
+
+   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +54,17 @@ class _HomeState extends State<Home> {
                           border: OutlineInputBorder(),
                           labelText: 'Adicione uma tarefa',
                           hintText: 'Ex: Estudar',
+                          errorText: erroText,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xff00d7f3),
+                              width: 2,
+                            )
+                          ),
+                          labelStyle: TextStyle(
+                            color: Color(0xff00d7f3),
+                          )
+
 
                         ),
                       ),
@@ -55,12 +78,19 @@ class _HomeState extends State<Home> {
                       ),
                         onPressed: (){
                           String text =tarefaController.text;
+                          if(text.isEmpty){
+                           setState((){
+                             erroText = 'O texto não pode ser vazio!';
+                           });
+                            return;
+                          }
                           setState((){
                             Lista novaLista = Lista(
                               title: text,
                               dateTime: DateTime.now()
                             );
                             tarefas.add(novaLista);
+                            erroText = null;
 
                           });
                           tarefaController.clear();
@@ -140,6 +170,7 @@ class _HomeState extends State<Home> {
             setState((){
               tarefas.insert(deleteListaPos!, deletedLista!);
             });
+            todoRepositories.saveTodoList(tarefas);
           },
         ) ,
         duration: const Duration(seconds: 5),
@@ -182,6 +213,7 @@ class _HomeState extends State<Home> {
   void deleteAllTodos(){
     setState((){
       tarefas.clear();
+      todoRepositories.saveTodoList(tarefas);
     });
   }
 }
