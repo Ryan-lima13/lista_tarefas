@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lista_tarefas/models/lista.dart';
+import 'package:lista_tarefas/repositories/todo_repositories.dart';
 
 import '../widgets/TarefasListItem.dart';
 
@@ -19,6 +20,7 @@ class _HomeState extends State<Home> {
 
 
    final TextEditingController tarefaController = TextEditingController();
+   final TodoRepositories todoRepositories = TodoRepositories();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,8 @@ class _HomeState extends State<Home> {
 
                           });
                           tarefaController.clear();
+                          todoRepositories.saveTodoList(tarefas);
+
 
                         },
                         child: Icon(
